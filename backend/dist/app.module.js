@@ -33,16 +33,21 @@ exports.AppModule = AppModule = __decorate([
             typeorm_1.TypeOrmModule.forRootAsync({
                 imports: [config_1.ConfigModule],
                 inject: [config_1.ConfigService],
-                useFactory: (configService) => ({
-                    type: 'postgres',
-                    host: configService.get('DB_HOST', 'localhost'),
-                    port: configService.get('DB_PORT', 5432),
-                    username: configService.get('DB_USERNAME', 'wellvantage_user'),
-                    password: configService.get('DB_PASSWORD', 'wellvantage_password'),
-                    database: configService.get('DB_NAME', 'wellvantage_db'),
-                    entities: [user_entity_1.User, workout_plan_entity_1.WorkoutPlan, workout_day_entity_1.WorkoutDay, exercise_entity_1.Exercise, availability_entity_1.Availability],
-                    synchronize: true,
-                }),
+                useFactory: (configService) => {
+                    const databaseUrl = configService.get('DATABASE_URL');
+                    return {
+                        type: 'postgres',
+                        url: databaseUrl,
+                        host: !databaseUrl ? configService.get('DB_HOST', 'localhost') : undefined,
+                        port: !databaseUrl ? configService.get('DB_PORT', 5432) : undefined,
+                        username: !databaseUrl ? configService.get('DB_USERNAME', 'wellvantage_user') : undefined,
+                        password: !databaseUrl ? configService.get('DB_PASSWORD', 'wellvantage_password') : undefined,
+                        database: !databaseUrl ? configService.get('DB_NAME', 'wellvantage_db') : undefined,
+                        entities: [user_entity_1.User, workout_plan_entity_1.WorkoutPlan, workout_day_entity_1.WorkoutDay, exercise_entity_1.Exercise, availability_entity_1.Availability],
+                        synchronize: true,
+                        ssl: databaseUrl ? { rejectUnauthorized: false } : false,
+                    };
+                },
             }),
             auth_module_1.AuthModule,
             users_module_1.UsersModule,

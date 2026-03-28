@@ -23,6 +23,27 @@ let AvailabilityService = class AvailabilityService {
         this.availabilityRepository = availabilityRepository;
     }
     async createMany(userId, createAvailabilityDtos) {
+        const seenSlots = new Set();
+        for (const dto of createAvailabilityDtos) {
+            const slotKey = `${dto.date}|${dto.startTime}|${dto.endTime}`;
+            if (seenSlots.has(slotKey)) {
+                throw new common_1.ConflictException(`Duplicate slot in request: ${dto.date} ${dto.startTime}-${dto.endTime}`);
+            }
+            seenSlots.add(slotKey);
+        }
+        for (const dto of createAvailabilityDtos) {
+            const existing = await this.availabilityRepository.findOne({
+                where: {
+                    user: { id: userId },
+                    date: dto.date,
+                    startTime: dto.startTime,
+                    endTime: dto.endTime,
+                },
+            });
+            if (existing) {
+                throw new common_1.ConflictException(`Slot already exists: ${dto.date} ${dto.startTime}-${dto.endTime}`);
+            }
+        }
         const slotsData = createAvailabilityDtos.map(dto => ({ ...dto, user: { id: userId } }));
         const slots = this.availabilityRepository.create(slotsData);
         return this.availabilityRepository.save(slots);
