@@ -16,6 +16,7 @@ exports.WorkoutsController = void 0;
 const common_1 = require("@nestjs/common");
 const workouts_service_1 = require("./workouts.service");
 const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
+const create_workout_dto_1 = require("./dto/create-workout.dto");
 let WorkoutsController = class WorkoutsController {
     workoutsService;
     constructor(workoutsService) {
@@ -37,15 +38,15 @@ __decorate([
     __param(0, (0, common_1.Request)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [Object, create_workout_dto_1.CreateWorkoutPlanDto]),
+    __metadata("design:returntype", Promise)
 ], WorkoutsController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
     __param(0, (0, common_1.Request)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], WorkoutsController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Delete)(':id'),
@@ -53,7 +54,7 @@ __decorate([
     __param(1, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], WorkoutsController.prototype, "remove", null);
 exports.WorkoutsController = WorkoutsController = __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),

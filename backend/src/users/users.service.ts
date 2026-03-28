@@ -10,6 +10,15 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) {}
 
+  /**
+   * Finds a user by email or creates a new one if not found.
+   * Updates the picture if it has changed.
+   * @param email User's email address.
+   * @param name User's full name.
+   * @param googleId User's unique Google ID.
+   * @param picture Optional URL to user's profile picture.
+   * @returns A promise resolving to the User entity.
+   */
   async findOrCreateUser(email: string, name: string, googleId: string, picture?: string): Promise<User> {
     let user = await this.usersRepository.findOne({ where: { email } });
     if (!user) {
@@ -22,7 +31,13 @@ export class UsersService {
     return user;
   }
 
+  /**
+   * Retrieves a user by their unique database ID.
+   * @param id The UUID of the user.
+   * @returns A promise resolving to the User entity or null if not found.
+   */
   async findById(id: string): Promise<User | null> {
     return this.usersRepository.findOne({ where: { id } });
   }
 }
+

@@ -33,6 +33,7 @@ let WorkoutsService = class WorkoutsService {
         return this.workoutPlansRepository.find({
             where: { user: { id: userId } },
             relations: ['days', 'days.exercises'],
+            order: { createdAt: 'DESC' },
         });
     }
     async remove(id, userId) {
