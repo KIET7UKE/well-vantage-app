@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Availability } from './entities/availability.entity';
@@ -13,39 +13,11 @@ export class AvailabilityService {
 
   /**
    * Creates and saves several availability slots for a specific user.
-   * Checks for duplicates within the request and in the database.
    * @param userId The ID of the user creating the slots.
    * @param createAvailabilityDtos Array of availability slot details.
    * @returns A promise resolving to an array of saved Availability entities.
-   * @throws ConflictException if a duplicate slot is found.
    */
   async createMany(userId: string, createAvailabilityDtos: CreateAvailabilityDto[]): Promise<Availability[]> {
-    // 1. Check for duplicates within the batch
-    const seenSlots = new Set<string>();
-    for (const dto of createAvailabilityDtos) {
-      const slotKey = `${dto.date}|${dto.startTime}|${dto.endTime}`;
-      if (seenSlots.has(slotKey)) {
-        throw new ConflictException(`Duplicate slot in request: ${dto.date} ${dto.startTime}-${dto.endTime}`);
-      }
-      seenSlots.add(slotKey);
-    }
-
-    // 2. Check each slot against the database
-    for (const dto of createAvailabilityDtos) {
-      const existing = await this.availabilityRepository.findOne({
-        where: {
-          user: { id: userId },
-          date: dto.date,
-          startTime: dto.startTime,
-          endTime: dto.endTime,
-        },
-      });
-
-      if (existing) {
-        throw new ConflictException(`Slot already exists: ${dto.date} ${dto.startTime}-${dto.endTime}`);
-      }
-    }
-
     const slotsData = createAvailabilityDtos.map(dto => ({ ...dto, user: { id: userId } }));
     const slots = this.availabilityRepository.create(slotsData);
     return this.availabilityRepository.save(slots);

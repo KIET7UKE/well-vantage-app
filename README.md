@@ -7,6 +7,7 @@ WellVantage is a full-stack mobile application designed for personal trainers an
 ## 🚀 Tech Stack
 
 ### Frontend
+
 - **Framework**: [React Native](https://reactnative.dev/) (TypeScript)
 - **State Management**: [Redux Toolkit](https://redux-toolkit.js.org/)
 - **Navigation**: [React Navigation](https://reactnavigation.org/)
@@ -14,6 +15,7 @@ WellVantage is a full-stack mobile application designed for personal trainers an
 - **Icons**: [Lucide React Native](https://lucide.dev/guide/react-native)
 
 ### Backend
+
 - **Framework**: [NestJS](https://nestjs.com/)
 - **ORM**: [TypeORM](https://typeorm.io/)
 - **Database**: [PostgreSQL](https://www.postgresql.org/) (Dockerized)
@@ -25,6 +27,7 @@ WellVantage is a full-stack mobile application designed for personal trainers an
 ## 🛠️ Project Setup
 
 ### Prerequisites
+
 - [Node.js](https://nodejs.org/) (LTS)
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/) (for Database)
 - [Android Studio](https://developer.android.com/studio) / [Xcode](https://developer.apple.com/xcode/) (for Mobile Development)
@@ -34,23 +37,27 @@ WellVantage is a full-stack mobile application designed for personal trainers an
 ### 1. Backend Setup (Server)
 
 1. **Navigate to backend directory**:
+
    ```bash
    cd backend
    ```
 
 2. **Install dependencies**:
+
    ```bash
    npm install
    ```
 
 3. **Configure Environment Variables**:
    Copy the example template and fill in your credentials (Google Client ID, JWT Secret, etc.):
+
    ```bash
    cp .env.example .env
    ```
 
 4. **Start the Database**:
    Launch the PostgreSQL container using Docker Compose:
+
    ```bash
    docker-compose up -d
    ```
@@ -66,11 +73,13 @@ WellVantage is a full-stack mobile application designed for personal trainers an
 ### 2. Frontend Setup (Mobile App)
 
 1. **Install root dependencies**:
+
    ```bash
    npm install
    ```
 
 2. **Install iOS Native Modules** (macOS only):
+
    ```bash
    cd ios && pod install && cd ..
    ```
@@ -108,6 +117,14 @@ wellvantageapp/
 
 ---
 
+## 📱 Downloads
+
+You can download the latest Android build (APK) from the following location:
+
+- **Android APK**: [Download from Google Drive](https://drive.google.com/drive/u/1/folders/1DV8rm85y4bg2XWOs_GAZQUYKMEp6RLXK)
+
+---
+
 ## ✨ Features
 
 - **Google Authentication**: Secure sign-in for both Android and iOS.
@@ -119,4 +136,5 @@ wellvantageapp/
 ---
 
 ## 📄 License
+
 This project is UNLICENSED.
