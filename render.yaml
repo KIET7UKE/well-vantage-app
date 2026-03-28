@@ -1,0 +1,29 @@
+services:
+  # WellVantage Backend Service
+  - type: web
+    name: wellvantage-backend
+    runtime: docker
+    dockerContext: ./backend
+    dockerfilePath: ./backend/Dockerfile
+    envVars:
+      - key: PORT
+        value: 3000
+      - key: DATABASE_URL
+        fromDatabase:
+          name: wellvantage-db
+          property: connectionString
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: GOOGLE_CLIENT_ID
+        sync: false # Must be set manually in Render Dashboard
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false # Must be set manually in Render Dashboard
+
+databases:
+  # PostgreSQL Managed Service
+  - name: wellvantage-db
+    databaseName: wellvantage_db
+    user: wellvantage_user
+    plan: free # Change to paid for persistent storage if needed

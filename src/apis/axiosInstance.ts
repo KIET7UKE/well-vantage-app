@@ -2,9 +2,14 @@ import axios from 'axios';
 import { getFromStore, setStore } from '../storage/device';
 import { KeyConstants } from '../storage/constant';
 
+// API Base URL
+// For local development: 'http://192.168.29.187:3000'
+// For production: Update this after Render deployment (e.g., 'https://your-app.onrender.com')
+export const BASE_URL = 'http://192.168.29.187:3000';
+
 // Create an Axios instance
 const axiosInstance = axios.create({
-  baseURL: 'http://192.168.29.187:3000',
+  baseURL: BASE_URL,
 });
 
 // Logging interceptors

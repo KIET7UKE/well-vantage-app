@@ -21,16 +21,22 @@ import { Availability } from './availability/entities/availability.entity';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        host: configService.get<string>('DB_HOST', 'localhost'),
-        port: configService.get<number>('DB_PORT', 5432),
-        username: configService.get<string>('DB_USERNAME', 'wellvantage_user'),
-        password: configService.get<string>('DB_PASSWORD', 'wellvantage_password'),
-        database: configService.get<string>('DB_NAME', 'wellvantage_db'),
-        entities: [User, WorkoutPlan, WorkoutDay, Exercise, Availability],
-        synchronize: true, // Auto-create schemas for dev
-      }),
+      useFactory: (configService: ConfigService) => {
+        const databaseUrl = configService.get<string>('DATABASE_URL');
+        
+        return {
+          type: 'postgres',
+          url: databaseUrl, // Use connection string if available (Render)
+          host: !databaseUrl ? configService.get<string>('DB_HOST', 'localhost') : undefined,
+          port: !databaseUrl ? configService.get<number>('DB_PORT', 5432) : undefined,
+          username: !databaseUrl ? configService.get<string>('DB_USERNAME', 'wellvantage_user') : undefined,
+          password: !databaseUrl ? configService.get<string>('DB_PASSWORD', 'wellvantage_password') : undefined,
+          database: !databaseUrl ? configService.get<string>('DB_NAME', 'wellvantage_db') : undefined,
+          entities: [User, WorkoutPlan, WorkoutDay, Exercise, Availability],
+          synchronize: true, // Auto-create schemas (fine for initial deployment)
+          ssl: databaseUrl ? { rejectUnauthorized: false } : false, // Enable SSL for cloud DBs
+        };
+      },
     }),
     AuthModule,
     UsersModule,
