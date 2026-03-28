@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Calendar } from 'react-native-calendars';
-import { Trash2 } from 'lucide-react-native';
+import { Trash2, ChevronLeft, ChevronRight } from 'lucide-react-native';
 import { getAPI, deleteAPI } from '../../../apis/api';
 import { useIsFocused } from '@react-navigation/native';
 
@@ -14,7 +14,13 @@ interface Slot {
 
 export const BookSlotsTab = () => {
   const isFocused = useIsFocused();
-  const [selectedDate, setSelectedDate] = useState('2026-03-24');
+  const today = new Date();
+  const tomorrow = new Date(today);
+  tomorrow.setDate(today.getDate() + 1);
+  const tomorrowString = tomorrow.toISOString().split('T')[0];
+
+  const [selectedDate, setSelectedDate] = useState(tomorrowString);
+  const [currentMonth, setCurrentMonth] = useState(tomorrowString);
   const [slotsData, setSlotsData] = useState<Slot[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -59,8 +65,16 @@ export const BookSlotsTab = () => {
 
       <View style={styles.calendarContainer}>
         <Calendar
-          current={selectedDate}
-          onDayPress={(day) => setSelectedDate(day.dateString)}
+          current={currentMonth}
+          onMonthChange={(month) => setCurrentMonth(month.dateString)}
+          enableSwipeMonths={true}
+          minDate={tomorrowString}
+          renderArrow={(direction: string) => (
+            direction === 'left' ? <ChevronLeft color="#333" size={24} /> : <ChevronRight color="#333" size={24} />
+          )}
+          onDayPress={(day) => {
+            setSelectedDate(day.dateString);
+          }}
           markedDates={{
             [selectedDate]: { selected: true, selectedColor: '#27A745' }
           }}
@@ -68,6 +82,7 @@ export const BookSlotsTab = () => {
             selectedDayBackgroundColor: '#27A745',
             todayTextColor: '#27A745',
             arrowColor: '#333',
+            textDisabledColor: '#d9e1e8',
           }}
         />
       </View>
