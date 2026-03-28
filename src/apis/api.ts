@@ -1,9 +1,5 @@
-import axios, { AxiosRequestConfig } from "axios";
-import { Platform, Share } from "react-native";
-import ReactNativeBlobUtil from "react-native-blob-util";
-import axiosInstance, { setInterceptors } from "./axiosInstance";
-import { getFromStore } from "../storage/device";
-import { KeyConstants } from "../storage/constant";
+import { AxiosRequestConfig } from 'axios';
+import axiosInstance, { setInterceptors } from './axiosInstance';
 
 const withInterceptors = async (callback: () => Promise<any>) => {
   await setInterceptors();
@@ -14,7 +10,7 @@ const withInterceptors = async (callback: () => Promise<any>) => {
 export const getAPI = async <T>(
   endpoint: string,
   params: any = {},
-  headers: AxiosRequestConfig["headers"] = {},
+  headers: AxiosRequestConfig['headers'] = {},
 ): Promise<T> => {
   return withInterceptors(async () => {
     try {
@@ -22,10 +18,10 @@ export const getAPI = async <T>(
         params,
         headers,
       });
-      console.log(response, "ress");
+      console.log(response, 'ress');
       return response.data;
     } catch (error: any) {
-      console.log(error, "error");
+      console.log(error, 'error');
       throw new Error(
         error?.response?.data?.data?.details?.[0]?.message ||
           error?.response?.data?.data?.message ||
@@ -41,7 +37,7 @@ export class APIError extends Error {
   data: any;
   constructor(message: string, data?: any) {
     super(message);
-    this.name = "APIError";
+    this.name = 'APIError';
     this.data = data;
   }
 }
@@ -51,19 +47,19 @@ export const postAPI = async <T>(
   endpoint: string,
   data: any = {},
   params: any = {},
-  headers: AxiosRequestConfig["headers"] = {},
+  headers: AxiosRequestConfig['headers'] = {},
 ): Promise<T> => {
   return withInterceptors(async () => {
     try {
-      console.log(data, "data");
+      console.log(data, 'data');
       const response = await axiosInstance.post<T>(endpoint, data, {
         params,
         headers,
       });
-      console.log(response, "response");
+      console.log(response, 'response');
       return response.data;
     } catch (error: any) {
-      console.log(error, "error");
+      console.log(error, 'error');
       const errorMessage =
         error?.response?.data?.data?.message ||
         error?.response?.data?.data?.details?.[0]?.message ||
@@ -81,7 +77,7 @@ export const putAPI = async <T>(
   endpoint: string,
   data: any = {},
   params: any = {},
-  headers: AxiosRequestConfig["headers"] = {},
+  headers: AxiosRequestConfig['headers'] = {},
 ): Promise<T> => {
   return withInterceptors(async () => {
     try {
@@ -106,7 +102,7 @@ export const deleteAPI = async <T>(
   endpoint: string,
   data: any = {},
   params: any = {},
-  headers: AxiosRequestConfig["headers"] = {},
+  headers: AxiosRequestConfig['headers'] = {},
 ): Promise<T> => {
   return withInterceptors(async () => {
     try {
