@@ -15,7 +15,7 @@ import {
 import { Calendar } from 'react-native-calendars';
 import { Calendar as CalendarIcon, Clock } from 'lucide-react-native';
 import { postAPI } from '../../../apis/api';
-import { BottomModalPicker } from '../../../components/BottomModalPicker';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 export const AvailabilityTab = () => {
   const [loading, setLoading] = useState(false);
@@ -137,10 +137,10 @@ export const AvailabilityTab = () => {
         </View>
       </View>
 
-      <BottomModalPicker
+      <DateTimePickerModal
         isVisible={pickerMode !== null}
         mode={pickerMode === 'date' ? 'date' : 'time'}
-        value={
+        date={
           pickerMode === 'date' ? selectedDate : 
           pickerMode === 'start' ? startTime : endTime
         }
