@@ -74,11 +74,11 @@ export const BookSlotsTab = () => {
 
       <View style={styles.slotsSection}>
         <Text style={styles.sectionTitle}>Available Slots:</Text>
-        
+
         {loading ? (
           <ActivityIndicator size="large" color="#27A745" />
         ) : filteredSlots.length === 0 ? (
-          <Text style={{textAlign: 'center', marginTop: 10, color: '#666'}}>No slots for this date</Text>
+          <Text style={{ textAlign: 'center', marginTop: 10, color: '#666' }}>No slots for this date</Text>
         ) : (
           filteredSlots.map((slot) => (
             <View key={slot.id} style={styles.slotRow}>
@@ -95,10 +95,6 @@ export const BookSlotsTab = () => {
           ))
         )}
       </View>
-
-      <Text style={styles.footerNote}>
-        Developer notes: slots are not selectable or bookable, we only show availability here.
-      </Text>
     </ScrollView>
   );
 };

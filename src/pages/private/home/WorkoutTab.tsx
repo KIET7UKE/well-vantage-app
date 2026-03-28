@@ -71,6 +71,16 @@ export const WorkoutTab = ({ onAddPress }: WorkoutTabProps) => {
     setExpandedPlanId(expandedPlanId === id ? null : id);
   };
 
+  const formatValue = (value: string, unit: string) => {
+    if (!value) return '';
+    // If the value already contains non-numeric characters (like "secs" or "mins"), return it as is
+    if (/[a-zA-Z]/.test(value)) {
+      return value;
+    }
+    // Otherwise, append the shorthand unit (s for sets, r for reps)
+    return `${value}${unit}`;
+  };
+
   const handleDelete = async (id: string) => {
     try {
       await deleteAPI(`/workouts/${id}`);
@@ -138,7 +148,9 @@ export const WorkoutTab = ({ onAddPress }: WorkoutTabProps) => {
                             <Dumbbell color="#27A745" size={14} style={{ marginRight: 8 }} />
                             <Text style={styles.exerciseName}>{ex.name}</Text>
                             <View style={styles.setsRepsContainer}>
-                              <Text style={styles.setsRepsText}>{ex.sets}s × {ex.reps}r</Text>
+                              <Text style={styles.setsRepsText}>
+                                {formatValue(ex.sets, 's')} × {formatValue(ex.reps, 'r')}
+                              </Text>
                             </View>
                           </View>
                         ))}
