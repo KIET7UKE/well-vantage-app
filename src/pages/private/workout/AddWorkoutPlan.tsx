@@ -157,8 +157,8 @@ export const AddWorkoutPlan = () => {
         showBack={true} 
         onBackPress={() => navigation.goBack()} 
       />
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.container}>
-        <ScrollView contentContainerStyle={styles.scrollContent}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
+        <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
           
           <TextInput
             style={styles.planNameInput}
@@ -271,6 +271,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     padding: 20,
+    flexGrow: 1,
   },
   planNameInput: {
     borderWidth: 1,

@@ -10,10 +10,11 @@ import {
   ActivityIndicator, 
   Alert, 
   Pressable, 
-  Platform 
+  Platform,
+  KeyboardAvoidingView
 } from 'react-native';
 import { Calendar } from 'react-native-calendars';
-import { Calendar as CalendarIcon, Clock } from 'lucide-react-native';
+import { Calendar as CalendarIcon, Clock, ChevronLeft, ChevronRight } from 'lucide-react-native';
 import { postAPI } from '../../../apis/api';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
@@ -31,6 +32,10 @@ export const AvailabilityTab = () => {
   // Picker visibility
   const [pickerMode, setPickerMode] = useState<'date' | 'start' | 'end' | null>(null);
 
+  const today = new Date();
+  const todayString = today.toISOString().split('T')[0];
+  const [currentMonth, setCurrentMonth] = useState(todayString);
+
   const formatTime = (date: Date) => {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
   };
@@ -39,7 +44,12 @@ export const AvailabilityTab = () => {
     return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
   };
 
+  const mainDateStr = selectedDate.toISOString().split('T')[0];
+
   const handleDayPress = (day: any) => {
+    if (day.dateString < todayString) return;
+    if (day.dateString === mainDateStr) return; // Main date is mandatory
+    
     const currentSelected = { ...selectedDates };
     if (currentSelected[day.dateString]) {
       delete currentSelected[day.dateString];
@@ -70,8 +80,8 @@ export const AvailabilityTab = () => {
       
       // Determine which dates to use
       const dates = repeatSessions 
-        ? Object.keys(selectedDates) 
-        : [selectedDate.toISOString().split('T')[0]];
+        ? Array.from(new Set([mainDateStr, ...Object.keys(selectedDates)]))
+        : [mainDateStr];
 
       if (dates.length === 0) {
         Alert.alert('Selection Error', 'Please select at least one date.');
@@ -98,10 +108,16 @@ export const AvailabilityTab = () => {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>Set Availability</Text>
-      
-      {!repeatSessions && (
+    <KeyboardAvoidingView 
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}
+    >
+      <ScrollView 
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={styles.scrollContent}
+      >
+        <Text style={styles.title}>Set Availability</Text>
+        
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Date*</Text>
           <Pressable 
@@ -112,83 +128,95 @@ export const AvailabilityTab = () => {
             <CalendarIcon color="#666" size={20} style={styles.rightIcon} />
           </Pressable>
         </View>
-      )}
 
-      <View style={styles.rowWrapper}>
-        <View style={[styles.inputGroup, { flex: 1, marginRight: 10 }]}>
-          <Text style={styles.label}>Start Time*</Text>
-          <Pressable 
-            style={styles.selectorContainer} 
-            onPress={() => setPickerMode('start')}
-          >
-            <Text style={styles.selectorValue}>{formatTime(startTime)}</Text>
-            <Clock color="#666" size={18} style={styles.rightIcon} />
-          </Pressable>
-        </View>
-        <View style={[styles.inputGroup, { flex: 1 }]}>
-          <Text style={styles.label}>End Time*</Text>
-          <Pressable 
-            style={styles.selectorContainer} 
-            onPress={() => setPickerMode('end')}
-          >
-            <Text style={styles.selectorValue}>{formatTime(endTime)}</Text>
-            <Clock color="#666" size={18} style={styles.rightIcon} />
-          </Pressable>
-        </View>
-      </View>
-
-      <DateTimePickerModal
-        isVisible={pickerMode !== null}
-        mode={pickerMode === 'date' ? 'date' : 'time'}
-        date={
-          pickerMode === 'date' ? selectedDate : 
-          pickerMode === 'start' ? startTime : endTime
-        }
-        onConfirm={handleConfirm}
-        onCancel={() => setPickerMode(null)}
-      />
-
-      <View style={styles.switchWrapper}>
-        <Text style={styles.switchLabel}>Repeat Sessions</Text>
-        <Switch 
-          value={repeatSessions}
-          onValueChange={setRepeatSessions}
-          trackColor={{ false: "#767577", true: "#27A745" }}
-          thumbColor={repeatSessions ? "#f4f3f4" : "#f4f3f4"}
-        />
-      </View>
-
-      {repeatSessions && (
-        <View style={styles.calendarSection}>
-          <Text style={styles.sectionLabel}>Select Multiple Dates:</Text>
-          <View style={styles.calendarContainer}>
-            <Calendar
-              onDayPress={handleDayPress}
-              markedDates={selectedDates}
-              theme={{
-                selectedDayBackgroundColor: '#27A745',
-                todayTextColor: '#27A745',
-                arrowColor: '#333',
-              }}
-            />
+        <View style={styles.rowWrapper}>
+          <View style={[styles.inputGroup, { flex: 1, marginRight: 10 }]}>
+            <Text style={styles.label}>Start Time*</Text>
+            <Pressable 
+              style={styles.selectorContainer} 
+              onPress={() => setPickerMode('start')}
+            >
+              <Text style={styles.selectorValue}>{formatTime(startTime)}</Text>
+              <Clock color="#666" size={18} style={styles.rightIcon} />
+            </Pressable>
+          </View>
+          <View style={[styles.inputGroup, { flex: 1 }]}>
+            <Text style={styles.label}>End Time*</Text>
+            <Pressable 
+              style={styles.selectorContainer} 
+              onPress={() => setPickerMode('end')}
+            >
+              <Text style={styles.selectorValue}>{formatTime(endTime)}</Text>
+              <Clock color="#666" size={18} style={styles.rightIcon} />
+            </Pressable>
           </View>
         </View>
-      )}
 
-      <View style={styles.inputGroup}>
-        <Text style={styles.label}>Session Name*</Text>
-        <TextInput 
-          style={styles.textInput}
-          placeholder="e.g. PT"
-          value={sessionName}
-          onChangeText={setSessionName}
+        <DateTimePickerModal
+          isVisible={pickerMode !== null}
+          mode={pickerMode === 'date' ? 'date' : 'time'}
+          date={
+            pickerMode === 'date' ? selectedDate : 
+            pickerMode === 'start' ? startTime : endTime
+          }
+          minimumDate={pickerMode === 'date' ? new Date() : undefined}
+          onConfirm={handleConfirm}
+          onCancel={() => setPickerMode(null)}
         />
-      </View>
 
-      <TouchableOpacity style={styles.createButton} onPress={handleCreate} disabled={loading}>
-        {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.createButtonText}>Create</Text>}
-      </TouchableOpacity>
-    </ScrollView>
+        <View style={styles.switchWrapper}>
+          <Text style={styles.switchLabel}>Repeat Sessions</Text>
+          <Switch 
+            value={repeatSessions}
+            onValueChange={setRepeatSessions}
+            trackColor={{ false: "#767577", true: "#27A745" }}
+            thumbColor={repeatSessions ? "#f4f3f4" : "#f4f3f4"}
+          />
+        </View>
+
+        {repeatSessions && (
+          <View style={styles.calendarSection}>
+            <Text style={styles.sectionLabel}>Select Multiple Dates:</Text>
+            <View style={styles.calendarContainer}>
+              <Calendar
+                current={currentMonth}
+                onMonthChange={(month: any) => setCurrentMonth(month.dateString)}
+                enableSwipeMonths={true}
+                renderArrow={(direction: string) => (
+                  direction === 'left' ? <ChevronLeft color="#333" size={24} /> : <ChevronRight color="#333" size={24} />
+                )}
+                onDayPress={handleDayPress}
+                markedDates={{
+                  ...selectedDates,
+                  [mainDateStr]: { selected: true, selectedColor: '#27A745', disableTouchEvent: true }
+                }}
+                minDate={todayString}
+                theme={{
+                  selectedDayBackgroundColor: '#27A745',
+                  todayTextColor: '#27A745',
+                  textDisabledColor: '#d9e1e8',
+                  arrowColor: '#333',
+                }}
+              />
+            </View>
+          </View>
+        )}
+
+        <View style={styles.inputGroup}>
+          <Text style={styles.label}>Session Name*</Text>
+          <TextInput 
+            style={styles.textInput}
+            placeholder="e.g. PT"
+            value={sessionName}
+            onChangeText={setSessionName}
+          />
+        </View>
+
+        <TouchableOpacity style={styles.createButton} onPress={handleCreate} disabled={loading}>
+          {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.createButtonText}>Create</Text>}
+        </TouchableOpacity>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -196,7 +224,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  scrollContent: {
     padding: 20,
+    flexGrow: 1,
   },
   title: {
     fontSize: 22,
