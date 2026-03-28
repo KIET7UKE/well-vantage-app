@@ -1,12 +1,41 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
-import { Trash2, Plus } from 'lucide-react-native';
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  TouchableOpacity, 
+  ScrollView, 
+  ActivityIndicator, 
+  LayoutAnimation, 
+  Platform, 
+  UIManager 
+} from 'react-native';
+import { Trash2, Plus, ChevronDown, ChevronRight, Dumbbell } from 'lucide-react-native';
 import { getAPI, deleteAPI } from '../../../apis/api';
 import { useIsFocused } from '@react-navigation/native';
+
+// Enable LayoutAnimation for Android
+if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
+
+interface Exercise {
+  name: string;
+  sets: string;
+  reps: string;
+}
+
+interface DayPlan {
+  dayLabel: string;
+  muscleGroup: string;
+  exercises: Exercise[];
+}
 
 interface WorkoutPlan {
   id: string;
   name: string;
+  notes?: string;
+  days: DayPlan[];
 }
 
 interface WorkoutTabProps {
@@ -17,6 +46,7 @@ export const WorkoutTab = ({ onAddPress }: WorkoutTabProps) => {
   const isFocused = useIsFocused();
   const [workoutPlans, setWorkoutPlans] = useState<WorkoutPlan[]>([]);
   const [loading, setLoading] = useState(true);
+  const [expandedPlanId, setExpandedPlanId] = useState<string | null>(null);
 
   const fetchWorkouts = async () => {
     try {
@@ -36,6 +66,11 @@ export const WorkoutTab = ({ onAddPress }: WorkoutTabProps) => {
     }
   }, [isFocused]);
 
+  const toggleAccordion = (id: string) => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setExpandedPlanId(expandedPlanId === id ? null : id);
+  };
+
   const handleDelete = async (id: string) => {
     try {
       await deleteAPI(`/workouts/${id}`);
@@ -54,15 +89,66 @@ export const WorkoutTab = ({ onAddPress }: WorkoutTabProps) => {
 
         {loading ? (
           <ActivityIndicator size="large" color="#27A745" style={{ marginTop: 20 }} />
+        ) : workoutPlans.length === 0 ? (
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>No workout plans yet. Add one to get started!</Text>
+          </View>
         ) : (
-          workoutPlans.map((plan) => (
-            <View key={plan.id} style={styles.planCard}>
-              <Text style={styles.planName}>{plan.name}</Text>
-              <TouchableOpacity style={styles.deleteButton} onPress={() => handleDelete(plan.id)}>
-                <Trash2 color="#E74C3C" size={20} />
-              </TouchableOpacity>
-            </View>
-          ))
+          workoutPlans.map((plan) => {
+            const isExpanded = expandedPlanId === plan.id;
+            return (
+              <View key={plan.id} style={styles.planCardWrapper}>
+                <TouchableOpacity 
+                  style={styles.planCard} 
+                  onPress={() => toggleAccordion(plan.id)}
+                  activeOpacity={0.7}
+                >
+                  <View style={styles.planHeaderLeft}>
+                    {isExpanded ? (
+                      <ChevronDown color="#27A745" size={20} style={{ marginRight: 8 }} />
+                    ) : (
+                      <ChevronRight color="#666" size={20} style={{ marginRight: 8 }} />
+                    )}
+                    <Text style={[styles.planName, isExpanded && styles.planNameActive]}>
+                      {plan.name}
+                    </Text>
+                  </View>
+                  <TouchableOpacity style={styles.deleteButton} onPress={() => handleDelete(plan.id)}>
+                    <Trash2 color="#E74C3C" size={18} />
+                  </TouchableOpacity>
+                </TouchableOpacity>
+
+                {isExpanded && (
+                  <View style={styles.planDetails}>
+                    {plan.notes ? (
+                      <View style={styles.notesBox}>
+                        <Text style={styles.notesText}>{plan.notes}</Text>
+                      </View>
+                    ) : null}
+
+                    {plan.days.map((day, dIdx) => (
+                      <View key={dIdx} style={styles.daySection}>
+                        <View style={styles.dayHeader}>
+                          <Text style={styles.dayLabel}>{day.dayLabel}</Text>
+                          <Text style={styles.muscleGroup}>{day.muscleGroup}</Text>
+                        </View>
+                        
+                        {day.exercises.map((ex, eIdx) => (
+                          <View key={eIdx} style={styles.exerciseItem}>
+                            <Dumbbell color="#27A745" size={14} style={{ marginRight: 8 }} />
+                            <Text style={styles.exerciseName}>{ex.name}</Text>
+                            <View style={styles.setsRepsContainer}>
+                              <Text style={styles.setsRepsText}>{ex.sets}s × {ex.reps}r</Text>
+                            </View>
+                          </View>
+                        ))}
+                      </View>
+                    ))}
+                  </View>
+                )}
+              </View>
+            );
+          })
         )}
 
         <View style={styles.fabContainer}>
@@ -78,37 +164,135 @@ export const WorkoutTab = ({ onAddPress }: WorkoutTabProps) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#FAFAFA',
   },
   scrollContent: {
     padding: 20,
-    paddingBottom: 100, // Make room for FAB
+    paddingBottom: 100,
   },
   sectionHeader: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#F0F0F0',
     padding: 12,
-    borderRadius: 6,
-    marginBottom: 16,
+    borderRadius: 8,
+    marginBottom: 20,
   },
   sectionTitle: {
+    fontSize: 13,
+    color: '#666',
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+  },
+  emptyContainer: {
+    padding: 40,
+    alignItems: 'center',
+  },
+  emptyText: {
+    color: '#999',
+    textAlign: 'center',
     fontSize: 14,
-    color: '#333',
-    fontWeight: '500',
+  },
+  planCardWrapper: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 5,
+    elevation: 2,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: '#F0F0F0',
   },
   planCard: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#EEEEEE',
+    padding: 16,
+  },
+  planHeaderLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
   },
   planName: {
-    fontSize: 15,
+    fontSize: 16,
     color: '#333333',
+    fontWeight: '600',
+  },
+  planNameActive: {
+    color: '#27A745',
   },
   deleteButton: {
-    padding: 4,
+    padding: 8,
+  },
+  planDetails: {
+    paddingHorizontal: 16,
+    paddingBottom: 20,
+    borderTopWidth: 1,
+    borderTopColor: '#F5F5F5',
+    backgroundColor: '#FCFCFC',
+  },
+  notesBox: {
+    backgroundColor: '#FFF8E1',
+    padding: 10,
+    borderRadius: 6,
+    marginTop: 12,
+    marginBottom: 10,
+  },
+  notesText: {
+    fontSize: 13,
+    color: '#666',
+    fontStyle: 'italic',
+  },
+  daySection: {
+    marginTop: 16,
+  },
+  dayHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+    borderLeftWidth: 3,
+    borderLeftColor: '#27A745',
+    paddingLeft: 8,
+  },
+  dayLabel: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#1A1A1A',
+  },
+  muscleGroup: {
+    fontSize: 12,
+    color: '#27A745',
+    fontWeight: '600',
+    backgroundColor: '#E8F5E9',
+    paddingVertical: 2,
+    paddingHorizontal: 8,
+    borderRadius: 4,
+  },
+  exerciseItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 8,
+    paddingLeft: 12,
+  },
+  exerciseName: {
+    fontSize: 14,
+    color: '#444',
+    flex: 1,
+  },
+  setsRepsContainer: {
+    backgroundColor: '#F5F5F5',
+    paddingVertical: 2,
+    paddingHorizontal: 8,
+    borderRadius: 4,
+  },
+  setsRepsText: {
+    fontSize: 12,
+    color: '#666',
+    fontWeight: '500',
   },
   fabContainer: {
     alignItems: 'center',
@@ -121,10 +305,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#27A745',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 4,
+    shadowColor: '#27A745',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
   },
 });

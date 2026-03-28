@@ -195,7 +195,7 @@ export const AddWorkoutPlan = () => {
                 <View key={exercise.id} style={styles.exerciseRow}>
                   <TextInput
                     style={[styles.exerciseInput, { flex: 2 }]}
-                    placeholder="Exercise name (e.g. Bench Press)"
+                    placeholder="Exercise name"
                     placeholderTextColor="#999"
                     value={exercise.name}
                     onChangeText={(val) => updateExercise(day.id, exercise.id, 'name', val)}
@@ -221,19 +221,20 @@ export const AddWorkoutPlan = () => {
                 </View>
               ))}
 
-              <View style={styles.addExerciseContainer}>
-                <TouchableOpacity style={styles.addExerciseBtn} onPress={() => addExercise(day.id)}>
-                  <Plus color="#fff" size={16} />
-                </TouchableOpacity>
-              </View>
+              <TouchableOpacity 
+                style={styles.addExerciseFullBtn} 
+                onPress={() => addExercise(day.id)}
+              >
+                <Plus color="#27A745" size={16} style={{ marginRight: 6 }} />
+                <Text style={styles.addExerciseText}>Add Exercise</Text>
+              </TouchableOpacity>
             </View>
           ))}
 
-          <View style={styles.addDayContainer}>
-            <TouchableOpacity style={styles.addDayBtn} onPress={addDay}>
-              <Plus color="#fff" size={20} />
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity style={styles.addDayFullBtn} onPress={addDay}>
+            <Plus color="#fff" size={20} style={{ marginRight: 8 }} />
+            <Text style={styles.addDayText}>Add Another Day</Text>
+          </TouchableOpacity>
 
           <View style={styles.notesContainer}>
             <TextInput
@@ -349,29 +350,41 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     color: '#333',
   },
-  addExerciseContainer: {
+  addExerciseFullBtn: {
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 10,
+    borderWidth: 1,
+    borderColor: '#27A745',
+    borderStyle: 'dashed',
+    borderRadius: 8,
     marginTop: 10,
+    backgroundColor: '#F9FFF9',
   },
-  addExerciseBtn: {
-    backgroundColor: '#27A745',
-    width: 28,
-    height: 28,
-    borderRadius: 14,
+  addExerciseText: {
+    color: '#27A745',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  addDayFullBtn: {
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  addDayContainer: {
-    alignItems: 'center',
+    backgroundColor: '#27A745',
+    paddingVertical: 14,
+    borderRadius: 12,
     marginBottom: 30,
+    shadowColor: '#27A745',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 3,
   },
-  addDayBtn: {
-    backgroundColor: '#27A745',
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
+  addDayText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '700',
   },
   notesContainer: {
     marginBottom: 30,
