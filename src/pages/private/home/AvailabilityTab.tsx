@@ -1,14 +1,44 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Switch, TouchableOpacity, ScrollView, ActivityIndicator, Alert } from 'react-native';
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  TextInput, 
+  Switch, 
+  TouchableOpacity, 
+  ScrollView, 
+  ActivityIndicator, 
+  Alert, 
+  Pressable, 
+  Platform 
+} from 'react-native';
 import { Calendar } from 'react-native-calendars';
-import { Calendar as CalendarIcon } from 'lucide-react-native';
+import { Calendar as CalendarIcon, Clock } from 'lucide-react-native';
 import { postAPI } from '../../../apis/api';
+import { BottomModalPicker } from '../../../components/BottomModalPicker';
 
 export const AvailabilityTab = () => {
   const [loading, setLoading] = useState(false);
   const [repeatSessions, setRepeatSessions] = useState(false);
   const [selectedDates, setSelectedDates] = useState<{ [date: string]: any }>({});
   
+  // Selection states
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [startTime, setStartTime] = useState(new Date());
+  const [endTime, setEndTime] = useState(new Date(new Date().getTime() + 15 * 60000)); // Default 15 mins later
+  const [sessionName, setSessionName] = useState('PT');
+  
+  // Picker visibility
+  const [pickerMode, setPickerMode] = useState<'date' | 'start' | 'end' | null>(null);
+
+  const formatTime = (date: Date) => {
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+  };
+
+  const formatDate = (date: Date) => {
+    return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
+  };
+
   const handleDayPress = (day: any) => {
     const currentSelected = { ...selectedDates };
     if (currentSelected[day.dateString]) {
@@ -19,22 +49,49 @@ export const AvailabilityTab = () => {
     setSelectedDates(currentSelected);
   };
 
+  const handleConfirm = (date: Date) => {
+    if (pickerMode === 'date') {
+      setSelectedDate(date);
+    } else if (pickerMode === 'start') {
+      setStartTime(date);
+      // Automatically adjust end time if it's before start time
+      if (endTime < date) {
+        setEndTime(new Date(date.getTime() + 15 * 60000));
+      }
+    } else if (pickerMode === 'end') {
+      setEndTime(date);
+    }
+    setPickerMode(null);
+  };
+
   const handleCreate = async () => {
     try {
       setLoading(true);
-      const dates = repeatSessions ? Object.keys(selectedDates) : ['2026-03-24'];
+      
+      // Determine which dates to use
+      const dates = repeatSessions 
+        ? Object.keys(selectedDates) 
+        : [selectedDate.toISOString().split('T')[0]];
+
+      if (dates.length === 0) {
+        Alert.alert('Selection Error', 'Please select at least one date.');
+        setLoading(false);
+        return;
+      }
+
       const payload = dates.map(date => ({
         date,
-        startTime: '11:30 AM', // hardcoded based on mock UI
-        endTime: '11:45 AM',
-        sessionName: 'PT'
+        startTime: formatTime(startTime),
+        endTime: formatTime(endTime),
+        sessionName: sessionName
       }));
+
       await postAPI('/availability', payload);
       Alert.alert('Success', 'Availability saved!');
-      setSelectedDates({});
+      if (repeatSessions) setSelectedDates({});
     } catch (error) {
       console.error('Failed to create availability', error);
-      Alert.alert('Error', 'Failed to save');
+      Alert.alert('Error', 'Failed to save availability');
     } finally {
       setLoading(false);
     }
@@ -44,34 +101,52 @@ export const AvailabilityTab = () => {
     <ScrollView style={styles.container}>
       <Text style={styles.title}>Set Availability</Text>
       
-      <View style={styles.inputGroup}>
-        <Text style={styles.label}>Date*</Text>
-        <View style={styles.dateInputContainer}>
-          <TextInput 
-            style={styles.textInput}
-            value="24 July 2024"
-            editable={false}
-          />
-          <CalendarIcon color="#666" size={20} style={styles.calendarIcon} />
+      {!repeatSessions && (
+        <View style={styles.inputGroup}>
+          <Text style={styles.label}>Date*</Text>
+          <Pressable 
+            style={styles.selectorContainer} 
+            onPress={() => setPickerMode('date')}
+          >
+            <Text style={styles.selectorValue}>{formatDate(selectedDate)}</Text>
+            <CalendarIcon color="#666" size={20} style={styles.rightIcon} />
+          </Pressable>
         </View>
-      </View>
+      )}
 
       <View style={styles.rowWrapper}>
         <View style={[styles.inputGroup, { flex: 1, marginRight: 10 }]}>
           <Text style={styles.label}>Start Time*</Text>
-          <TextInput 
-            style={styles.textInput}
-            value="11:30 AM"
-          />
+          <Pressable 
+            style={styles.selectorContainer} 
+            onPress={() => setPickerMode('start')}
+          >
+            <Text style={styles.selectorValue}>{formatTime(startTime)}</Text>
+            <Clock color="#666" size={18} style={styles.rightIcon} />
+          </Pressable>
         </View>
         <View style={[styles.inputGroup, { flex: 1 }]}>
           <Text style={styles.label}>End Time*</Text>
-          <TextInput 
-            style={styles.textInput}
-            value="11:45 AM"
-          />
+          <Pressable 
+            style={styles.selectorContainer} 
+            onPress={() => setPickerMode('end')}
+          >
+            <Text style={styles.selectorValue}>{formatTime(endTime)}</Text>
+            <Clock color="#666" size={18} style={styles.rightIcon} />
+          </Pressable>
         </View>
       </View>
+
+      <BottomModalPicker
+        isVisible={pickerMode !== null}
+        mode={pickerMode === 'date' ? 'date' : 'time'}
+        value={
+          pickerMode === 'date' ? selectedDate : 
+          pickerMode === 'start' ? startTime : endTime
+        }
+        onConfirm={handleConfirm}
+        onCancel={() => setPickerMode(null)}
+      />
 
       <View style={styles.switchWrapper}>
         <Text style={styles.switchLabel}>Repeat Sessions</Text>
@@ -84,16 +159,19 @@ export const AvailabilityTab = () => {
       </View>
 
       {repeatSessions && (
-        <View style={styles.calendarContainer}>
-          <Calendar
-            onDayPress={handleDayPress}
-            markedDates={selectedDates}
-            theme={{
-              selectedDayBackgroundColor: '#27A745',
-              todayTextColor: '#27A745',
-              arrowColor: '#333',
-            }}
-          />
+        <View style={styles.calendarSection}>
+          <Text style={styles.sectionLabel}>Select Multiple Dates:</Text>
+          <View style={styles.calendarContainer}>
+            <Calendar
+              onDayPress={handleDayPress}
+              markedDates={selectedDates}
+              theme={{
+                selectedDayBackgroundColor: '#27A745',
+                todayTextColor: '#27A745',
+                arrowColor: '#333',
+              }}
+            />
+          </View>
         </View>
       )}
 
@@ -102,6 +180,8 @@ export const AvailabilityTab = () => {
         <TextInput 
           style={styles.textInput}
           placeholder="e.g. PT"
+          value={sessionName}
+          onChangeText={setSessionName}
         />
       </View>
 
@@ -119,69 +199,100 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   title: {
-    fontSize: 20,
-    fontWeight: '600',
+    fontSize: 22,
+    fontWeight: '700',
     textAlign: 'center',
-    marginBottom: 24,
-    color: '#000',
+    marginBottom: 30,
+    color: '#1A1A1A',
   },
   inputGroup: {
-    marginBottom: 16,
+    marginBottom: 20,
   },
   rowWrapper: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   label: {
-    fontSize: 12,
-    color: '#666',
-    marginBottom: 8,
-  },
-  textInput: {
-    borderWidth: 1,
-    borderColor: '#E0E0E0',
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
     fontSize: 14,
-    color: '#333',
+    color: '#666',
+    fontWeight: '500',
+    marginBottom: 10,
   },
-  dateInputContainer: {
+  selectorContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    borderWidth: 1.5,
+    borderColor: '#F0F0F0',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    backgroundColor: '#F9F9F9',
+    justifyContent: 'space-between',
   },
-  calendarIcon: {
-    position: 'absolute',
-    right: 16,
+  selectorValue: {
+    fontSize: 15,
+    color: '#1A1A1A',
+    fontWeight: '500',
+  },
+  rightIcon: {
+    marginLeft: 10,
+  },
+  textInput: {
+    borderWidth: 1.5,
+    borderColor: '#F0F0F0',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    fontSize: 15,
+    color: '#1A1A1A',
+    backgroundColor: '#F9F9F9',
   },
   switchWrapper: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 16,
+    paddingVertical: 20,
+    borderBottomWidth: 1,
+    borderTopWidth: 1,
+    borderColor: '#F5F5F5',
+    marginBottom: 20,
   },
   switchLabel: {
     fontSize: 16,
-    color: '#333',
+    color: '#1A1A1A',
+    fontWeight: '600',
+  },
+  calendarSection: {
+    marginBottom: 20,
+  },
+  sectionLabel: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 12,
+    fontWeight: '500',
   },
   calendarContainer: {
     borderWidth: 1,
-    borderColor: '#E0E0E0',
-    borderRadius: 8,
-    marginBottom: 20,
+    borderColor: '#F0F0F0',
+    borderRadius: 12,
     overflow: 'hidden',
   },
   createButton: {
     backgroundColor: '#27A745',
-    borderRadius: 8,
-    paddingVertical: 14,
+    borderRadius: 12,
+    paddingVertical: 16,
     alignItems: 'center',
     marginTop: 20,
-    marginBottom: 40,
+    marginBottom: 50,
+    shadowColor: '#27A745',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 4,
   },
   createButtonText: {
     color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 17,
+    fontWeight: '700',
   },
 });

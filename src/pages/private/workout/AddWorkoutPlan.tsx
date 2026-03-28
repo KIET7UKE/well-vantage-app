@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform, SafeAreaView, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform, SafeAreaView, ActivityIndicator, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../navigation/rootStackParamList';
@@ -85,6 +85,45 @@ export const AddWorkoutPlan = () => {
   const handleSubmit = async () => {
     try {
       setLoading(true);
+
+      // Validation
+      if (!planName.trim()) {
+        Alert.alert('Validation Error', 'Please enter a plan name.');
+        setLoading(false);
+        return;
+      }
+
+      if (days.length === 0) {
+        Alert.alert('Validation Error', 'Please add at least one day to your plan.');
+        setLoading(false);
+        return;
+      }
+
+      for (const day of days) {
+        if (!day.muscleGroup.trim()) {
+          Alert.alert('Validation Error', `Please enter a muscle group for ${day.dayLabel}.`);
+          setLoading(false);
+          return;
+        }
+        if (day.exercises.length === 0) {
+          Alert.alert('Validation Error', `Please add at least one exercise for ${day.dayLabel}.`);
+          setLoading(false);
+          return;
+        }
+        for (const exercise of day.exercises) {
+          if (!exercise.name.trim()) {
+            Alert.alert('Validation Error', `Please enter a name for all exercises in ${day.dayLabel}.`);
+            setLoading(false);
+            return;
+          }
+          if (!exercise.sets.trim() || !exercise.reps.trim()) {
+            Alert.alert('Validation Error', `Please enter sets and reps for "${exercise.name || 'all exercises'}" in ${day.dayLabel}.`);
+            setLoading(false);
+            return;
+          }
+        }
+      }
+
       const payload = {
         name: planName,
         notes,
@@ -124,6 +163,7 @@ export const AddWorkoutPlan = () => {
           <TextInput
             style={styles.planNameInput}
             placeholder="E.g. Beginner's Workout - 3 days"
+            placeholderTextColor="#999"
             value={planName}
             onChangeText={setPlanName}
           />
@@ -137,6 +177,7 @@ export const AddWorkoutPlan = () => {
                 <TextInput
                   style={styles.muscleInput}
                   placeholder="e.g. Chest"
+                  placeholderTextColor="#999"
                   value={day.muscleGroup}
                   onChangeText={(val) => updateDay(day.id, 'muscleGroup', val)}
                 />
@@ -154,20 +195,23 @@ export const AddWorkoutPlan = () => {
                 <View key={exercise.id} style={styles.exerciseRow}>
                   <TextInput
                     style={[styles.exerciseInput, { flex: 2 }]}
-                    placeholder="Exercise name"
+                    placeholder="Exercise name (e.g. Bench Press)"
+                    placeholderTextColor="#999"
                     value={exercise.name}
                     onChangeText={(val) => updateExercise(day.id, exercise.id, 'name', val)}
                   />
                   <TextInput
                     style={styles.numberInput}
-                    placeholder="0"
+                    placeholder="Sets"
+                    placeholderTextColor="#999"
                     keyboardType="numeric"
                     value={exercise.sets}
                     onChangeText={(val) => updateExercise(day.id, exercise.id, 'sets', val)}
                   />
                   <TextInput
                     style={styles.numberInput}
-                    placeholder="0-0"
+                    placeholder="Reps"
+                    placeholderTextColor="#999"
                     value={exercise.reps}
                     onChangeText={(val) => updateExercise(day.id, exercise.id, 'reps', val)}
                   />
@@ -194,7 +238,8 @@ export const AddWorkoutPlan = () => {
           <View style={styles.notesContainer}>
             <TextInput
               style={styles.notesInput}
-              placeholder="Bench Press: www.benchpress.com\nEat Oats"
+              placeholder="Additional notes: (e.g. Bench Press: www.example.com)"
+              placeholderTextColor="#999"
               multiline
               numberOfLines={4}
               value={notes}
