@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Animated, StyleSheet, ViewStyle, DimensionValue, Dimensions } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import { COLORS } from '../../constants/colors';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -41,7 +42,7 @@ export const Skeleton: React.FC<SkeletonProps> = ({
           width,
           height,
           borderRadius,
-          backgroundColor: '#1C1C1C',
+          backgroundColor: COLORS.gray200,
           overflow: 'hidden',
         },
         style,
@@ -56,7 +57,7 @@ export const Skeleton: React.FC<SkeletonProps> = ({
         ]}
       >
         <LinearGradient
-          colors={['transparent', 'rgba(255, 255, 255, 0.05)', 'transparent']}
+          colors={['transparent', 'rgba(255, 255, 255, 0.4)', 'transparent']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={StyleSheet.absoluteFill}

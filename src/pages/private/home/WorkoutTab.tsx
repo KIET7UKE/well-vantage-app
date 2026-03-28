@@ -13,6 +13,7 @@ import {
 import { Trash2, Plus, ChevronDown, ChevronRight, Dumbbell } from 'lucide-react-native';
 import { getAPI, deleteAPI } from '../../../apis/api';
 import { useIsFocused } from '@react-navigation/native';
+import { COLORS } from '../../../constants/colors';
 
 // Enable LayoutAnimation for Android
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
@@ -98,7 +99,7 @@ export const WorkoutTab = ({ onAddPress }: WorkoutTabProps) => {
         </View>
 
         {loading ? (
-          <ActivityIndicator size="large" color="#27A745" style={{ marginTop: 20 }} />
+          <ActivityIndicator size="large" color={COLORS.primary} style={{ marginTop: 20 }} />
         ) : workoutPlans.length === 0 ? (
           <View style={styles.emptyContainer}>
             <Text style={styles.emptyText}>No workout plans yet. Add one to get started!</Text>
@@ -115,16 +116,16 @@ export const WorkoutTab = ({ onAddPress }: WorkoutTabProps) => {
                 >
                   <View style={styles.planHeaderLeft}>
                     {isExpanded ? (
-                      <ChevronDown color="#27A745" size={20} style={{ marginRight: 8 }} />
+                      <ChevronDown color={COLORS.primary} size={20} style={{ marginRight: 8 }} />
                     ) : (
-                      <ChevronRight color="#666" size={20} style={{ marginRight: 8 }} />
+                      <ChevronRight color={COLORS.textGray} size={20} style={{ marginRight: 8 }} />
                     )}
                     <Text style={[styles.planName, isExpanded && styles.planNameActive]}>
                       {plan.name}
                     </Text>
                   </View>
                   <TouchableOpacity style={styles.deleteButton} onPress={() => handleDelete(plan.id)}>
-                    <Trash2 color="#E74C3C" size={18} />
+                    <Trash2 color={COLORS.red} size={18} />
                   </TouchableOpacity>
                 </TouchableOpacity>
 
@@ -145,7 +146,7 @@ export const WorkoutTab = ({ onAddPress }: WorkoutTabProps) => {
                         
                         {day.exercises.map((ex, eIdx) => (
                           <View key={eIdx} style={styles.exerciseItem}>
-                            <Dumbbell color="#27A745" size={14} style={{ marginRight: 8 }} />
+                            <Dumbbell color={COLORS.primary} size={14} style={{ marginRight: 8 }} />
                             <Text style={styles.exerciseName}>{ex.name}</Text>
                             <View style={styles.setsRepsContainer}>
                               <Text style={styles.setsRepsText}>
@@ -163,9 +164,10 @@ export const WorkoutTab = ({ onAddPress }: WorkoutTabProps) => {
           })
         )}
 
-        <View style={styles.fabContainer}>
-          <TouchableOpacity style={styles.fab} onPress={onAddPress}>
-            <Plus color="#fff" size={24} />
+        <View style={styles.addBtnContainer}>
+          <TouchableOpacity style={styles.addPlanButton} onPress={onAddPress}>
+            <Plus color={COLORS.white} size={20} style={{ marginRight: 8 }} />
+            <Text style={styles.addPlanButtonText}>Add New Workout Plan</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -176,21 +178,21 @@ export const WorkoutTab = ({ onAddPress }: WorkoutTabProps) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAFAFA',
+    backgroundColor: COLORS.background,
   },
   scrollContent: {
     padding: 20,
     paddingBottom: 100,
   },
   sectionHeader: {
-    backgroundColor: '#F0F0F0',
+    backgroundColor: COLORS.bgSubtle,
     padding: 12,
     borderRadius: 8,
     marginBottom: 20,
   },
   sectionTitle: {
     fontSize: 13,
-    color: '#666',
+    color: COLORS.textGray,
     fontWeight: '700',
     textTransform: 'uppercase',
     letterSpacing: 1,
@@ -200,22 +202,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   emptyText: {
-    color: '#999',
+    color: COLORS.gray400,
     textAlign: 'center',
     fontSize: 14,
   },
   planCardWrapper: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.white,
     borderRadius: 12,
     marginBottom: 16,
-    shadowColor: '#000',
+    shadowColor: COLORS.shadow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 5,
     elevation: 2,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: '#F0F0F0',
+    borderColor: COLORS.border,
   },
   planCard: {
     flexDirection: 'row',
@@ -230,11 +232,11 @@ const styles = StyleSheet.create({
   },
   planName: {
     fontSize: 16,
-    color: '#333333',
+    color: COLORS.textDark,
     fontWeight: '600',
   },
   planNameActive: {
-    color: '#27A745',
+    color: COLORS.primary,
   },
   deleteButton: {
     padding: 8,
@@ -243,11 +245,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingBottom: 20,
     borderTopWidth: 1,
-    borderTopColor: '#F5F5F5',
-    backgroundColor: '#FCFCFC',
+    borderTopColor: COLORS.border,
+    backgroundColor: COLORS.bgSubtle,
   },
   notesBox: {
-    backgroundColor: '#FFF8E1',
+    backgroundColor: COLORS.warningLight,
     padding: 10,
     borderRadius: 6,
     marginTop: 12,
@@ -255,7 +257,7 @@ const styles = StyleSheet.create({
   },
   notesText: {
     fontSize: 13,
-    color: '#666',
+    color: COLORS.textGray,
     fontStyle: 'italic',
   },
   daySection: {
@@ -267,19 +269,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 10,
     borderLeftWidth: 3,
-    borderLeftColor: '#27A745',
+    borderLeftColor: COLORS.primary,
     paddingLeft: 8,
   },
   dayLabel: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#1A1A1A',
+    color: COLORS.textDark,
   },
   muscleGroup: {
     fontSize: 12,
-    color: '#27A745',
+    color: COLORS.primary,
     fontWeight: '600',
-    backgroundColor: '#E8F5E9',
+    backgroundColor: COLORS.primaryLight,
     paddingVertical: 2,
     paddingHorizontal: 8,
     borderRadius: 4,
@@ -292,35 +294,41 @@ const styles = StyleSheet.create({
   },
   exerciseName: {
     fontSize: 14,
-    color: '#444',
+    color: COLORS.gray700,
     flex: 1,
   },
   setsRepsContainer: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: COLORS.gray100,
     paddingVertical: 2,
     paddingHorizontal: 8,
     borderRadius: 4,
   },
   setsRepsText: {
     fontSize: 12,
-    color: '#666',
+    color: COLORS.textGray,
     fontWeight: '500',
   },
-  fabContainer: {
-    alignItems: 'center',
+  addBtnContainer: {
+    paddingHorizontal: 10,
     marginTop: 30,
+    marginBottom: 20,
   },
-  fab: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: '#27A745',
+  addPlanButton: {
+    backgroundColor: COLORS.primary,
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#27A745',
+    paddingVertical: 16,
+    borderRadius: 16,
+    shadowColor: COLORS.primary,
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
+    elevation: 6,
+  },
+  addPlanButtonText: {
+    color: COLORS.white,
+    fontSize: 16,
+    fontWeight: '700',
   },
 });

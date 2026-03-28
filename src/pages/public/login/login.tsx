@@ -76,11 +76,11 @@ export default function Login() {
 
   return (
     <View style={styles.container}>
-      <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
+      <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
 
       {loading && (
         <View style={styles.loadingOverlay}>
-          <ActivityIndicator size="large" color={COLORS.primary || "#f4632a"} />
+          <ActivityIndicator size="large" color={COLORS.primary} />
         </View>
       )}
 
@@ -92,17 +92,17 @@ export default function Login() {
         {/* Background Hero Section */}
         <View style={styles.heroSection}>
           <ImageBackground
-            source={{ uri: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070&auto=format&fit=crop" }} // Gym image instead of food
+            source={{ uri: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=2070&auto=format&fit=crop" }} // Fresh gym image
             style={styles.backgroundImage}
             resizeMode="cover"
           >
             <LinearGradient
-              colors={["transparent", "rgba(0,0,0,0.8)"]}
+              colors={["transparent", "rgba(255,255,255,0.7)"]}
               style={StyleSheet.absoluteFillObject}
             />
             {/* Brand Identity */}
             <View style={styles.brandContainer}>
-              <Text style={[styles.title, { textAlign: 'center', fontSize: 48 }]}>
+              <Text style={[styles.title, { textAlign: 'center', fontSize: 48, color: COLORS.textDark }]}>
                 WV
               </Text>
             </View>

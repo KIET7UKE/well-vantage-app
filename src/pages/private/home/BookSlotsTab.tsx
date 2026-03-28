@@ -4,6 +4,7 @@ import { Calendar } from 'react-native-calendars';
 import { Trash2, ChevronLeft, ChevronRight } from 'lucide-react-native';
 import { getAPI, deleteAPI } from '../../../apis/api';
 import { useIsFocused } from '@react-navigation/native';
+import { COLORS } from '../../../constants/colors';
 
 interface Slot {
   id: string;
@@ -70,19 +71,19 @@ export const BookSlotsTab = () => {
           enableSwipeMonths={true}
           minDate={tomorrowString}
           renderArrow={(direction: string) => (
-            direction === 'left' ? <ChevronLeft color="#333" size={24} /> : <ChevronRight color="#333" size={24} />
+            direction === 'left' ? <ChevronLeft color={COLORS.textDark} size={24} /> : <ChevronRight color={COLORS.textDark} size={24} />
           )}
           onDayPress={(day) => {
             setSelectedDate(day.dateString);
           }}
           markedDates={{
-            [selectedDate]: { selected: true, selectedColor: '#27A745' }
+            [selectedDate]: { selected: true, selectedColor: COLORS.primary }
           }}
           theme={{
-            selectedDayBackgroundColor: '#27A745',
-            todayTextColor: '#27A745',
-            arrowColor: '#333',
-            textDisabledColor: '#d9e1e8',
+            selectedDayBackgroundColor: COLORS.primary,
+            todayTextColor: COLORS.primary,
+            arrowColor: COLORS.textDark,
+            textDisabledColor: COLORS.gray300,
           }}
         />
       </View>
@@ -91,9 +92,9 @@ export const BookSlotsTab = () => {
         <Text style={styles.sectionTitle}>Available Slots:</Text>
 
         {loading ? (
-          <ActivityIndicator size="large" color="#27A745" />
+          <ActivityIndicator size="large" color={COLORS.primary} />
         ) : filteredSlots.length === 0 ? (
-          <Text style={{ textAlign: 'center', marginTop: 10, color: '#666' }}>No slots for this date</Text>
+          <Text style={{ textAlign: 'center', marginTop: 10, color: COLORS.textGray }}>No slots for this date</Text>
         ) : (
           filteredSlots.map((slot) => (
             <View key={slot.id} style={styles.slotRow}>
@@ -104,7 +105,7 @@ export const BookSlotsTab = () => {
                 <Text style={styles.badgeText}>Open</Text>
               </View>
               <TouchableOpacity style={styles.deleteButton} onPress={() => handleDelete(slot.id)}>
-                <Trash2 color="#E74C3C" size={20} />
+                <Trash2 color={COLORS.red} size={20} />
               </TouchableOpacity>
             </View>
           ))
@@ -117,7 +118,7 @@ export const BookSlotsTab = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.background,
     padding: 20,
   },
   title: {
@@ -125,11 +126,11 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     textAlign: 'center',
     marginBottom: 24,
-    color: '#000',
+    color: COLORS.textDark,
   },
   calendarContainer: {
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: COLORS.border,
     borderRadius: 8,
     marginBottom: 30,
     overflow: 'hidden',
@@ -139,7 +140,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 16,
-    color: '#333',
+    color: COLORS.textDark,
     fontWeight: '600',
     marginBottom: 16,
   },
@@ -151,7 +152,7 @@ const styles = StyleSheet.create({
   timeBox: {
     flex: 1,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: COLORS.border,
     borderRadius: 6,
     paddingVertical: 10,
     paddingHorizontal: 12,
@@ -159,18 +160,18 @@ const styles = StyleSheet.create({
   },
   timeText: {
     fontSize: 14,
-    color: '#333',
+    color: COLORS.textDark,
     textAlign: 'center',
   },
   badgeBox: {
-    backgroundColor: '#E8F5E9',
+    backgroundColor: COLORS.primaryLight,
     borderRadius: 4,
     paddingVertical: 4,
     paddingHorizontal: 12,
     marginRight: 10,
   },
   badgeText: {
-    color: '#27A745',
+    color: COLORS.primary,
     fontSize: 12,
     fontWeight: '600',
   },

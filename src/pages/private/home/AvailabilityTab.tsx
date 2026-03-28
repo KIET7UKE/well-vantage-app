@@ -17,6 +17,7 @@ import { Calendar } from 'react-native-calendars';
 import { Calendar as CalendarIcon, Clock, ChevronLeft, ChevronRight } from 'lucide-react-native';
 import { postAPI } from '../../../apis/api';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import { COLORS } from '../../../constants/colors';
 
 export const AvailabilityTab = () => {
   const [loading, setLoading] = useState(false);
@@ -54,7 +55,7 @@ export const AvailabilityTab = () => {
     if (currentSelected[day.dateString]) {
       delete currentSelected[day.dateString];
     } else {
-      currentSelected[day.dateString] = { selected: true, selectedColor: '#27A745' };
+      currentSelected[day.dateString] = { selected: true, selectedColor: COLORS.primary };
     }
     setSelectedDates(currentSelected);
   };
@@ -125,7 +126,7 @@ export const AvailabilityTab = () => {
             onPress={() => setPickerMode('date')}
           >
             <Text style={styles.selectorValue}>{formatDate(selectedDate)}</Text>
-            <CalendarIcon color="#666" size={20} style={styles.rightIcon} />
+            <CalendarIcon color={COLORS.textGray} size={20} style={styles.rightIcon} />
           </Pressable>
         </View>
 
@@ -137,7 +138,7 @@ export const AvailabilityTab = () => {
               onPress={() => setPickerMode('start')}
             >
               <Text style={styles.selectorValue}>{formatTime(startTime)}</Text>
-              <Clock color="#666" size={18} style={styles.rightIcon} />
+              <Clock color={COLORS.textGray} size={18} style={styles.rightIcon} />
             </Pressable>
           </View>
           <View style={[styles.inputGroup, { flex: 1 }]}>
@@ -147,7 +148,7 @@ export const AvailabilityTab = () => {
               onPress={() => setPickerMode('end')}
             >
               <Text style={styles.selectorValue}>{formatTime(endTime)}</Text>
-              <Clock color="#666" size={18} style={styles.rightIcon} />
+              <Clock color={COLORS.textGray} size={18} style={styles.rightIcon} />
             </Pressable>
           </View>
         </View>
@@ -169,8 +170,8 @@ export const AvailabilityTab = () => {
           <Switch 
             value={repeatSessions}
             onValueChange={setRepeatSessions}
-            trackColor={{ false: "#767577", true: "#27A745" }}
-            thumbColor={repeatSessions ? "#f4f3f4" : "#f4f3f4"}
+            trackColor={{ false: COLORS.gray300, true: COLORS.primary }}
+            thumbColor={COLORS.white}
           />
         </View>
 
@@ -183,19 +184,19 @@ export const AvailabilityTab = () => {
                 onMonthChange={(month: any) => setCurrentMonth(month.dateString)}
                 enableSwipeMonths={true}
                 renderArrow={(direction: string) => (
-                  direction === 'left' ? <ChevronLeft color="#333" size={24} /> : <ChevronRight color="#333" size={24} />
+                  direction === 'left' ? <ChevronLeft color={COLORS.textDark} size={24} /> : <ChevronRight color={COLORS.textDark} size={24} />
                 )}
                 onDayPress={handleDayPress}
                 markedDates={{
                   ...selectedDates,
-                  [mainDateStr]: { selected: true, selectedColor: '#27A745', disableTouchEvent: true }
+                  [mainDateStr]: { selected: true, selectedColor: COLORS.primary, disableTouchEvent: true }
                 }}
                 minDate={todayString}
                 theme={{
-                  selectedDayBackgroundColor: '#27A745',
-                  todayTextColor: '#27A745',
-                  textDisabledColor: '#d9e1e8',
-                  arrowColor: '#333',
+                  selectedDayBackgroundColor: COLORS.primary,
+                  todayTextColor: COLORS.primary,
+                  textDisabledColor: COLORS.gray300,
+                  arrowColor: COLORS.textDark,
                 }}
               />
             </View>
@@ -213,7 +214,7 @@ export const AvailabilityTab = () => {
         </View>
 
         <TouchableOpacity style={styles.createButton} onPress={handleCreate} disabled={loading}>
-          {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.createButtonText}>Create</Text>}
+          {loading ? <ActivityIndicator color={COLORS.white} /> : <Text style={styles.createButtonText}>Create</Text>}
         </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -223,7 +224,7 @@ export const AvailabilityTab = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.background,
   },
   scrollContent: {
     padding: 20,
@@ -235,7 +236,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     textAlign: 'center',
     marginBottom: 30,
-    color: '#1A1A1A',
+    color: COLORS.textDark,
   },
   inputGroup: {
     marginBottom: 20,
@@ -246,7 +247,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    color: '#666',
+    color: COLORS.textGray,
     fontWeight: '500',
     marginBottom: 10,
   },
@@ -254,16 +255,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1.5,
-    borderColor: '#F0F0F0',
+    borderColor: COLORS.border,
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 14,
-    backgroundColor: '#F9F9F9',
+    backgroundColor: COLORS.bgSubtle,
     justifyContent: 'space-between',
   },
   selectorValue: {
     fontSize: 15,
-    color: '#1A1A1A',
+    color: COLORS.textDark,
     fontWeight: '500',
   },
   rightIcon: {
@@ -271,13 +272,13 @@ const styles = StyleSheet.create({
   },
   textInput: {
     borderWidth: 1.5,
-    borderColor: '#F0F0F0',
+    borderColor: COLORS.border,
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 14,
     fontSize: 15,
-    color: '#1A1A1A',
-    backgroundColor: '#F9F9F9',
+    color: COLORS.textDark,
+    backgroundColor: COLORS.bgSubtle,
   },
   switchWrapper: {
     flexDirection: 'row',
@@ -286,12 +287,12 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     borderBottomWidth: 1,
     borderTopWidth: 1,
-    borderColor: '#F5F5F5',
+    borderColor: COLORS.border,
     marginBottom: 20,
   },
   switchLabel: {
     fontSize: 16,
-    color: '#1A1A1A',
+    color: COLORS.textDark,
     fontWeight: '600',
   },
   calendarSection: {
@@ -299,31 +300,31 @@ const styles = StyleSheet.create({
   },
   sectionLabel: {
     fontSize: 14,
-    color: '#666',
+    color: COLORS.textGray,
     marginBottom: 12,
     fontWeight: '500',
   },
   calendarContainer: {
     borderWidth: 1,
-    borderColor: '#F0F0F0',
+    borderColor: COLORS.border,
     borderRadius: 12,
     overflow: 'hidden',
   },
   createButton: {
-    backgroundColor: '#27A745',
+    backgroundColor: COLORS.primary,
     borderRadius: 12,
     paddingVertical: 16,
     alignItems: 'center',
     marginTop: 20,
     marginBottom: 50,
-    shadowColor: '#27A745',
+    shadowColor: COLORS.primary,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 8,
     elevation: 4,
   },
   createButtonText: {
-    color: '#fff',
+    color: COLORS.white,
     fontSize: 17,
     fontWeight: '700',
   },

@@ -20,14 +20,14 @@ export default function BottomTabNavigator() {
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: COLORS.primary,
-        tabBarInactiveTintColor: COLORS.gray400,
+        tabBarInactiveTintColor: COLORS.textGray,
         tabBarStyle: {
           height: 60 + insets.bottom,
           paddingBottom: insets.bottom + 8,
           paddingTop: 8,
           borderTopWidth: 1,
-          borderTopColor: "rgba(255,255,255,0.05)",
-          backgroundColor: COLORS.backgroundLight,
+          borderTopColor: COLORS.border,
+          backgroundColor: COLORS.background,
         },
         tabBarLabelStyle: {
           fontSize: 10,

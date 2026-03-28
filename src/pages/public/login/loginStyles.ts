@@ -6,7 +6,7 @@ const { width, height } = Dimensions.get("window");
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background || "#0F0C08",
+    backgroundColor: COLORS.background,
   },
   loadingOverlay: {
     ...StyleSheet.absoluteFillObject,
@@ -36,7 +36,7 @@ export const styles = StyleSheet.create({
   },
   contentArea: {
     flex: 1,
-    backgroundColor: COLORS.background || "#0F0C08",
+    backgroundColor: COLORS.background,
     marginTop: -30,
     borderTopLeftRadius: 32,
     borderTopRightRadius: 32,
@@ -49,7 +49,7 @@ export const styles = StyleSheet.create({
   welcomeText: {
     fontSize: 14,
     fontWeight: "700",
-    color: COLORS.primary || "#f4632a",
+    color: COLORS.primary,
     textTransform: "uppercase",
     letterSpacing: 2,
     marginBottom: 12,
@@ -57,16 +57,16 @@ export const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: "800",
-    color: COLORS.white || "#ffffff",
+    color: COLORS.textDark,
     lineHeight: 40,
     marginBottom: 16,
   },
   titleHighlight: {
-    color: COLORS.primary || "#f4632a",
+    color: COLORS.primary,
   },
   subtitle: {
     fontSize: 16,
-    color: COLORS.gray400 || "#94A3B8",
+    color: COLORS.textGray,
     lineHeight: 24,
   },
   buttonContainer: {
@@ -76,10 +76,12 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: COLORS.white || "#ffffff",
+    backgroundColor: COLORS.white,
     borderRadius: 16,
     paddingVertical: 18,
-    shadowColor: "#000",
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    shadowColor: COLORS.shadow,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 10,
@@ -88,7 +90,7 @@ export const styles = StyleSheet.create({
   primaryButtonText: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#000000",
+    color: COLORS.textDark,
     marginLeft: 12,
   },
   footer: {
@@ -103,23 +105,23 @@ export const styles = StyleSheet.create({
     height: 22,
     borderRadius: 6,
     borderWidth: 2,
-    borderColor: COLORS.gray500 || "#64748B",
+    borderColor: COLORS.gray300,
     marginRight: 12,
     justifyContent: "center",
     alignItems: "center",
   },
   checkboxActive: {
-    backgroundColor: COLORS.primary || "#f4632a",
-    borderColor: COLORS.primary || "#f4632a",
+    backgroundColor: COLORS.primary,
+    borderColor: COLORS.primary,
   },
   footerText: {
     flex: 1,
     fontSize: 13,
-    color: COLORS.gray400 || "#94A3B8",
+    color: COLORS.textGray,
     lineHeight: 18,
   },
   termsText: {
-    color: COLORS.primary || "#f4632a",
+    color: COLORS.primary,
     fontWeight: "600",
   },
 });

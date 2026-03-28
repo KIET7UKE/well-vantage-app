@@ -8,6 +8,8 @@ import { WorkoutTab } from './WorkoutTab';
 import { AvailabilityTab } from './AvailabilityTab';
 import { BookSlotsTab } from './BookSlotsTab';
 
+import { COLORS } from '../../../constants/colors';
+
 const { width, height } = Dimensions.get('window');
 
 export const Home = () => {
@@ -88,13 +90,13 @@ export const Home = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: COLORS.background,
   },
   tabContainer: {
     flexDirection: 'row',
     borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
-    backgroundColor: '#ffffff',
+    borderBottomColor: COLORS.border,
+    backgroundColor: COLORS.background,
   },
   tabButton: {
     flex: 1,
@@ -104,15 +106,15 @@ const styles = StyleSheet.create({
     borderBottomColor: 'transparent',
   },
   activeTabButton: {
-    borderBottomColor: '#27A745',
+    borderBottomColor: COLORS.primary,
   },
   tabText: {
     fontSize: 13,
-    color: '#666666',
+    color: COLORS.textGray,
     fontWeight: '500',
   },
   activeTabText: {
-    color: '#27A745',
+    color: COLORS.primary,
     fontWeight: '700',
   },
   contentContainer: {
@@ -129,9 +131,9 @@ const styles = StyleSheet.create({
   sidebar: {
     width: width * 0.75,
     height: '100%',
-    backgroundColor: '#ffffff',
+    backgroundColor: COLORS.background,
     paddingTop: 50,
-    shadowColor: '#000',
+    shadowColor: COLORS.shadow,
     shadowOffset: { width: 2, height: 0 },
     shadowOpacity: 0.2,
     shadowRadius: 5,
@@ -140,13 +142,13 @@ const styles = StyleSheet.create({
   sidebarHeader: {
     padding: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
+    borderBottomColor: COLORS.border,
     marginBottom: 10,
   },
   sidebarTitle: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#27A745',
+    color: COLORS.primary,
   },
   sidebarItem: {
     paddingVertical: 15,
@@ -154,18 +156,18 @@ const styles = StyleSheet.create({
   },
   sidebarItemText: {
     fontSize: 16,
-    color: '#333333',
+    color: COLORS.textDark,
   },
   sidebarFooter: {
     marginTop: 'auto',
     padding: 20,
     borderTopWidth: 1,
-    borderTopColor: '#E0E0E0',
+    borderTopColor: COLORS.border,
     paddingBottom: 40,
   },
   logoutText: {
     fontSize: 16,
-    color: '#E74C3C',
+    color: COLORS.red,
     fontWeight: '600',
   },
 });

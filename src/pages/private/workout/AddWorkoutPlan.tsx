@@ -6,6 +6,7 @@ import { RootStackParamList } from '../../../navigation/rootStackParamList';
 import { CustomHeader } from '../../../components/CustomHeader';
 import { Trash2, Plus } from 'lucide-react-native';
 import { postAPI } from '../../../apis/api';
+import { COLORS } from '../../../constants/colors';
 
 interface Exercise {
   id: string;
@@ -163,7 +164,7 @@ export const AddWorkoutPlan = () => {
           <TextInput
             style={styles.planNameInput}
             placeholder="E.g. Beginner's Workout - 3 days"
-            placeholderTextColor="#999"
+            placeholderTextColor={COLORS.textGray}
             value={planName}
             onChangeText={setPlanName}
           />
@@ -177,12 +178,12 @@ export const AddWorkoutPlan = () => {
                 <TextInput
                   style={styles.muscleInput}
                   placeholder="e.g. Chest"
-                  placeholderTextColor="#999"
+                  placeholderTextColor={COLORS.textGray}
                   value={day.muscleGroup}
                   onChangeText={(val) => updateDay(day.id, 'muscleGroup', val)}
                 />
                 <TouchableOpacity onPress={() => removeDay(day.id)}>
-                  <Trash2 color="#E74C3C" size={20} />
+                  <Trash2 color={COLORS.red} size={20} />
                 </TouchableOpacity>
               </View>
 
@@ -196,14 +197,14 @@ export const AddWorkoutPlan = () => {
                   <TextInput
                     style={[styles.exerciseInput, { flex: 2 }]}
                     placeholder="Exercise name"
-                    placeholderTextColor="#999"
+                    placeholderTextColor={COLORS.textGray}
                     value={exercise.name}
                     onChangeText={(val) => updateExercise(day.id, exercise.id, 'name', val)}
                   />
                   <TextInput
                     style={styles.numberInput}
                     placeholder="Sets"
-                    placeholderTextColor="#999"
+                    placeholderTextColor={COLORS.textGray}
                     keyboardType="numeric"
                     value={exercise.sets}
                     onChangeText={(val) => updateExercise(day.id, exercise.id, 'sets', val)}
@@ -211,12 +212,12 @@ export const AddWorkoutPlan = () => {
                   <TextInput
                     style={styles.numberInput}
                     placeholder="Reps"
-                    placeholderTextColor="#999"
+                    placeholderTextColor={COLORS.textGray}
                     value={exercise.reps}
                     onChangeText={(val) => updateExercise(day.id, exercise.id, 'reps', val)}
                   />
                   <TouchableOpacity onPress={() => removeExercise(day.id, exercise.id)} style={{ marginLeft: 8 }}>
-                    <Trash2 color="#E74C3C" size={20} />
+                    <Trash2 color={COLORS.red} size={20} />
                   </TouchableOpacity>
                 </View>
               ))}
@@ -225,14 +226,14 @@ export const AddWorkoutPlan = () => {
                 style={styles.addExerciseFullBtn} 
                 onPress={() => addExercise(day.id)}
               >
-                <Plus color="#27A745" size={16} style={{ marginRight: 6 }} />
+                <Plus color={COLORS.primary} size={16} style={{ marginRight: 6 }} />
                 <Text style={styles.addExerciseText}>Add Exercise</Text>
               </TouchableOpacity>
             </View>
           ))}
 
           <TouchableOpacity style={styles.addDayFullBtn} onPress={addDay}>
-            <Plus color="#fff" size={20} style={{ marginRight: 8 }} />
+            <Plus color={COLORS.white} size={20} style={{ marginRight: 8 }} />
             <Text style={styles.addDayText}>Add Another Day</Text>
           </TouchableOpacity>
 
@@ -240,7 +241,7 @@ export const AddWorkoutPlan = () => {
             <TextInput
               style={styles.notesInput}
               placeholder="Additional notes: (e.g. Bench Press: www.example.com)"
-              placeholderTextColor="#999"
+              placeholderTextColor={COLORS.textGray}
               multiline
               numberOfLines={4}
               value={notes}
@@ -251,7 +252,7 @@ export const AddWorkoutPlan = () => {
           </View>
 
           <TouchableOpacity style={styles.submitButton} onPress={handleSubmit} disabled={loading}>
-            {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.submitButtonText}>Submit</Text>}
+            {loading ? <ActivityIndicator color={COLORS.white} /> : <Text style={styles.submitButtonText}>Submit</Text>}
           </TouchableOpacity>
 
         </ScrollView>
@@ -263,11 +264,11 @@ export const AddWorkoutPlan = () => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#27A745',
+    backgroundColor: COLORS.primary,
   },
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: COLORS.background,
   },
   scrollContent: {
     padding: 20,
@@ -276,12 +277,12 @@ const styles = StyleSheet.create({
   },
   planNameInput: {
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: COLORS.border,
     borderRadius: 8,
     padding: 16,
     fontSize: 16,
     marginBottom: 24,
-    color: '#333',
+    color: COLORS.textDark,
   },
   dayContainer: {
     marginBottom: 30,
@@ -292,27 +293,27 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   dayBadge: {
-    backgroundColor: '#27A745',
+    backgroundColor: COLORS.primary,
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 20,
     marginRight: 10,
   },
   dayBadgeText: {
-    color: '#fff',
+    color: COLORS.white,
     fontWeight: '600',
     fontSize: 14,
   },
   muscleInput: {
     flex: 1,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: COLORS.border,
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 8,
     marginRight: 10,
     fontSize: 14,
-    color: '#333',
+    color: COLORS.textDark,
   },
   exerciseListHeader: {
     flexDirection: 'row',
@@ -322,7 +323,7 @@ const styles = StyleSheet.create({
   },
   columnLabel: {
     fontSize: 12,
-    color: '#666',
+    color: COLORS.textGray,
     width: 50,
     textAlign: 'center',
     marginLeft: 8,
@@ -334,15 +335,16 @@ const styles = StyleSheet.create({
   },
   exerciseInput: {
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: COLORS.border,
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 10,
     fontSize: 14,
+    color: COLORS.textDark,
   },
   numberInput: {
     borderWidth: 1,
-    borderColor: '#27A745',
+    borderColor: COLORS.primary,
     borderRadius: 8,
     paddingHorizontal: 8,
     paddingVertical: 10,
@@ -350,7 +352,7 @@ const styles = StyleSheet.create({
     width: 50,
     textAlign: 'center',
     marginLeft: 8,
-    color: '#333',
+    color: COLORS.textDark,
   },
   addExerciseFullBtn: {
     flexDirection: 'row',
@@ -358,14 +360,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 10,
     borderWidth: 1,
-    borderColor: '#27A745',
+    borderColor: COLORS.primary,
     borderStyle: 'dashed',
     borderRadius: 8,
     marginTop: 10,
-    backgroundColor: '#F9FFF9',
+    backgroundColor: COLORS.primaryLight,
   },
   addExerciseText: {
-    color: '#27A745',
+    color: COLORS.primary,
     fontSize: 14,
     fontWeight: '600',
   },
@@ -373,18 +375,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#27A745',
+    backgroundColor: COLORS.primary,
     paddingVertical: 14,
     borderRadius: 12,
     marginBottom: 30,
-    shadowColor: '#27A745',
+    shadowColor: COLORS.primary,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 6,
     elevation: 3,
   },
   addDayText: {
-    color: '#fff',
+    color: COLORS.white,
     fontSize: 16,
     fontWeight: '700',
   },
@@ -393,28 +395,28 @@ const styles = StyleSheet.create({
   },
   notesInput: {
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: COLORS.border,
     borderRadius: 8,
     padding: 16,
     height: 100,
     fontSize: 14,
-    color: '#333',
+    color: COLORS.textDark,
   },
   wordCount: {
     textAlign: 'right',
     fontSize: 12,
-    color: '#F39C12',
+    color: COLORS.warning,
     marginTop: 8,
   },
   submitButton: {
-    backgroundColor: '#27A745',
+    backgroundColor: COLORS.primary,
     paddingVertical: 16,
     borderRadius: 8,
     alignItems: 'center',
     marginBottom: 40,
   },
   submitButtonText: {
-    color: '#fff',
+    color: COLORS.white,
     fontSize: 16,
     fontWeight: '700',
   },

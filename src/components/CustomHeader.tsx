@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import { Menu, RotateCcw, ArrowLeft, RefreshCw } from 'lucide-react-native';
+import { COLORS } from '../constants/colors';
 
 interface CustomHeaderProps {
   title: string;
@@ -24,16 +25,16 @@ export const CustomHeader = ({
         onPress={showBack ? onBackPress : onMenuPress}
       >
         {showBack ? (
-          <ArrowLeft color="#fff" size={24} />
+          <ArrowLeft color={COLORS.white} size={24} />
         ) : (
-          <Menu color="#fff" size={24} />
+          <Menu color={COLORS.white} size={24} />
         )}
       </TouchableOpacity>
 
       <Text style={styles.title}>{title}</Text>
 
       <TouchableOpacity style={styles.iconButton} onPress={onRefreshPress}>
-        <RefreshCw color="#fff" size={20} />
+        <RefreshCw color={COLORS.white} size={20} />
       </TouchableOpacity>
     </View>
   );
@@ -44,8 +45,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#27A745', // Brand green
-    paddingTop: Platform.OS === 'ios' ? 50 : 20, // Approximate status bar height for custom header
+    backgroundColor: COLORS.primary,
+    paddingTop: Platform.OS === 'ios' ? 50 : 20,
     paddingBottom: 16,
     paddingHorizontal: 16,
   },
@@ -53,7 +54,7 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   title: {
-    color: '#ffffff',
+    color: COLORS.white,
     fontSize: 18,
     fontWeight: '600',
   },

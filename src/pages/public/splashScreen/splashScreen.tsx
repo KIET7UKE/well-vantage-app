@@ -10,6 +10,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../navigation/rootStackParamList";
 import { getFromStore } from "../../../storage/device";
 import { KeyConstants } from "../../../storage/constant";
+import { COLORS } from "../../../constants/colors";
 
 export default function SplashScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -30,7 +31,7 @@ export default function SplashScreen() {
 
   return (
     <View style={styles.container}>
-      <StatusBar backgroundColor="#27A745" barStyle="light-content" />
+      <StatusBar backgroundColor={COLORS.primary} barStyle="light-content" />
       <Text style={styles.brandName}>WellVantage</Text>
     </View>
   );
@@ -41,12 +42,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#27A745",
+    backgroundColor: COLORS.primary,
   },
   brandName: {
     fontSize: 40,
     fontWeight: "800",
-    color: "#FFFFFF",
+    color: COLORS.white,
     letterSpacing: 2,
     textTransform: "uppercase",
   },
