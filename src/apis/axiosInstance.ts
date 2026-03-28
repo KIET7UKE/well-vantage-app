@@ -4,8 +4,8 @@ import { KeyConstants } from '../storage/constant';
 
 // API Base URL
 // For local development: 'http://192.168.29.187:3000'
-// For production: Update this after Render deployment (e.g., 'https://your-app.onrender.com')
-export const BASE_URL = 'http://192.168.29.187:3000';
+// For production: 'https://well-vantage-app-1.onrender.com'
+export const BASE_URL = 'https://well-vantage-app-1.onrender.com';
 
 // Create an Axios instance
 const axiosInstance = axios.create({
