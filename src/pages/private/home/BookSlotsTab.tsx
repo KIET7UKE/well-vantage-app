@@ -16,12 +16,10 @@ interface Slot {
 export const BookSlotsTab = () => {
   const isFocused = useIsFocused();
   const today = new Date();
-  const tomorrow = new Date(today);
-  tomorrow.setDate(today.getDate() + 1);
-  const tomorrowString = tomorrow.toISOString().split('T')[0];
+  const todayString = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
 
-  const [selectedDate, setSelectedDate] = useState(tomorrowString);
-  const [currentMonth, setCurrentMonth] = useState(tomorrowString);
+  const [selectedDate, setSelectedDate] = useState(todayString);
+  const [currentMonth, setCurrentMonth] = useState(todayString);
   const [slotsData, setSlotsData] = useState<Slot[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -69,7 +67,7 @@ export const BookSlotsTab = () => {
           current={currentMonth}
           onMonthChange={(month) => setCurrentMonth(month.dateString)}
           enableSwipeMonths={true}
-          minDate={tomorrowString}
+          minDate={todayString}
           renderArrow={(direction: string) => (
             direction === 'left' ? <ChevronLeft color={COLORS.textDark} size={24} /> : <ChevronRight color={COLORS.textDark} size={24} />
           )}

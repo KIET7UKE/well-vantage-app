@@ -34,7 +34,7 @@ export const AvailabilityTab = () => {
   const [pickerMode, setPickerMode] = useState<'date' | 'start' | 'end' | null>(null);
 
   const today = new Date();
-  const todayString = today.toISOString().split('T')[0];
+  const todayString = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
   const [currentMonth, setCurrentMonth] = useState(todayString);
 
   const formatTime = (date: Date) => {
@@ -45,7 +45,7 @@ export const AvailabilityTab = () => {
     return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
   };
 
-  const mainDateStr = selectedDate.toISOString().split('T')[0];
+  const mainDateStr = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`;
 
   const handleDayPress = (day: any) => {
     if (day.dateString < todayString) return;
