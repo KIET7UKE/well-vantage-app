@@ -5,7 +5,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../navigation/rootStackParamList';
 import { CustomHeader } from '../../../components/CustomHeader';
 import { Trash2, Plus } from 'lucide-react-native';
-import { apiClient } from '../../../api/client';
+import { postAPI } from '../../../apis/api';
 
 interface Exercise {
   id: string;
@@ -98,7 +98,7 @@ export const AddWorkoutPlan = () => {
           }))
         }))
       };
-      await apiClient.post('/workouts', payload);
+      await postAPI('/workouts', payload);
       navigation.goBack();
     } catch (error) {
       console.error('Failed to save workout status', error);

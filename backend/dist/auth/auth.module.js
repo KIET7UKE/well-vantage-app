@@ -14,7 +14,6 @@ const auth_service_1 = require("./auth.service");
 const auth_controller_1 = require("./auth.controller");
 const jwt_strategy_1 = require("./jwt.strategy");
 const users_module_1 = require("../users/users.module");
-const config_1 = require("@nestjs/config");
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
@@ -27,7 +26,6 @@ exports.AuthModule = AuthModule = __decorate([
                 secret: 'super_secret_well_vantage_key',
                 signOptions: { expiresIn: '60m' },
             }),
-            config_1.ConfigModule,
         ],
         providers: [auth_service_1.AuthService, jwt_strategy_1.JwtStrategy],
         controllers: [auth_controller_1.AuthController],

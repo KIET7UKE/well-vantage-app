@@ -4,9 +4,7 @@ import { KeyConstants } from '../storage/constant';
 
 // Create an Axios instance
 const axiosInstance = axios.create({
-  // baseURL: 'http://localhost:5001/api',
-  // baseURL: 'http://192.168.29.187:5001/api', // for debugging in android device via wifi
-  baseURL: 'https://chalo-khane-backend.vercel.app/api', // prod api
+  baseURL: 'http://192.168.29.187:3000',
 });
 
 // Logging interceptors

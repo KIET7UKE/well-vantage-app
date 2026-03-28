@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { Trash2 } from 'lucide-react-native';
-import { apiClient } from '../../../api/client';
+import { getAPI, deleteAPI } from '../../../apis/api';
 import { useIsFocused } from '@react-navigation/native';
 
 interface Slot {
@@ -21,8 +21,8 @@ export const BookSlotsTab = () => {
   const fetchSlots = async () => {
     try {
       setLoading(true);
-      const res = await apiClient.get('/availability');
-      const mapped = res.data.map((item: any) => ({
+      const res = await getAPI<any[]>('/availability');
+      const mapped = res.map((item: any) => ({
         id: item.id,
         time: `${item.startTime} - ${item.endTime}`,
         open: true,
@@ -44,7 +44,7 @@ export const BookSlotsTab = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      await apiClient.delete(`/availability/${id}`);
+      await deleteAPI(`/availability/${id}`);
       fetchSlots();
     } catch (error) {
       console.error('Failed to delete slot', error);

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, Switch, TouchableOpacity, ScrollView, ActivityIndicator, Alert } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { Calendar as CalendarIcon } from 'lucide-react-native';
-import { apiClient } from '../../../api/client';
+import { postAPI } from '../../../apis/api';
 
 export const AvailabilityTab = () => {
   const [loading, setLoading] = useState(false);
@@ -29,7 +29,7 @@ export const AvailabilityTab = () => {
         endTime: '11:45 AM',
         sessionName: 'PT'
       }));
-      await apiClient.post('/availability', payload);
+      await postAPI('/availability', payload);
       Alert.alert('Success', 'Availability saved!');
       setSelectedDates({});
     } catch (error) {

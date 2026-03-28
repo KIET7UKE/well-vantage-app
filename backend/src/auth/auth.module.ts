@@ -5,7 +5,6 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './jwt.strategy';
 import { UsersModule } from '../users/users.module';
-import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -15,7 +14,6 @@ import { ConfigModule } from '@nestjs/config';
       secret: 'super_secret_well_vantage_key',
       signOptions: { expiresIn: '60m' },
     }),
-    ConfigModule,
   ],
   providers: [AuthService, JwtStrategy],
   controllers: [AuthController],

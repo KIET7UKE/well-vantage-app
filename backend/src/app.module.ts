@@ -10,19 +10,27 @@ import { User } from './users/entities/user.entity';
 import { WorkoutPlan } from './workouts/entities/workout-plan.entity';
 import { WorkoutDay } from './workouts/entities/workout-day.entity';
 import { Exercise } from './workouts/entities/exercise.entity';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Availability } from './availability/entities/availability.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'wellvantage_user',
-      password: 'wellvantage_password',
-      database: 'wellvantage_db',
-      entities: [User, WorkoutPlan, WorkoutDay, Exercise, Availability],
-      synchronize: true, // Auto-create schemas for dev
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        type: 'postgres',
+        host: configService.get<string>('DB_HOST', 'localhost'),
+        port: configService.get<number>('DB_PORT', 5432),
+        username: configService.get<string>('DB_USERNAME', 'wellvantage_user'),
+        password: configService.get<string>('DB_PASSWORD', 'wellvantage_password'),
+        database: configService.get<string>('DB_NAME', 'wellvantage_db'),
+        entities: [User, WorkoutPlan, WorkoutDay, Exercise, Availability],
+        synchronize: true, // Auto-create schemas for dev
+      }),
     }),
     AuthModule,
     UsersModule,

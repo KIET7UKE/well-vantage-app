@@ -19,6 +19,7 @@ const user_entity_1 = require("./users/entities/user.entity");
 const workout_plan_entity_1 = require("./workouts/entities/workout-plan.entity");
 const workout_day_entity_1 = require("./workouts/entities/workout-day.entity");
 const exercise_entity_1 = require("./workouts/entities/exercise.entity");
+const config_1 = require("@nestjs/config");
 const availability_entity_1 = require("./availability/entities/availability.entity");
 let AppModule = class AppModule {
 };
@@ -26,15 +27,22 @@ exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            typeorm_1.TypeOrmModule.forRoot({
-                type: 'postgres',
-                host: 'localhost',
-                port: 5432,
-                username: 'wellvantage_user',
-                password: 'wellvantage_password',
-                database: 'wellvantage_db',
-                entities: [user_entity_1.User, workout_plan_entity_1.WorkoutPlan, workout_day_entity_1.WorkoutDay, exercise_entity_1.Exercise, availability_entity_1.Availability],
-                synchronize: true,
+            config_1.ConfigModule.forRoot({
+                isGlobal: true,
+            }),
+            typeorm_1.TypeOrmModule.forRootAsync({
+                imports: [config_1.ConfigModule],
+                inject: [config_1.ConfigService],
+                useFactory: (configService) => ({
+                    type: 'postgres',
+                    host: configService.get('DB_HOST', 'localhost'),
+                    port: configService.get('DB_PORT', 5432),
+                    username: configService.get('DB_USERNAME', 'wellvantage_user'),
+                    password: configService.get('DB_PASSWORD', 'wellvantage_password'),
+                    database: configService.get('DB_NAME', 'wellvantage_db'),
+                    entities: [user_entity_1.User, workout_plan_entity_1.WorkoutPlan, workout_day_entity_1.WorkoutDay, exercise_entity_1.Exercise, availability_entity_1.Availability],
+                    synchronize: true,
+                }),
             }),
             auth_module_1.AuthModule,
             users_module_1.UsersModule,

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
 import { Trash2, Plus } from 'lucide-react-native';
-import { apiClient } from '../../../api/client';
+import { getAPI, deleteAPI } from '../../../apis/api';
 import { useIsFocused } from '@react-navigation/native';
 
 interface WorkoutPlan {
@@ -21,8 +21,8 @@ export const WorkoutTab = ({ onAddPress }: WorkoutTabProps) => {
   const fetchWorkouts = async () => {
     try {
       setLoading(true);
-      const res = await apiClient.get('/workouts');
-      setWorkoutPlans(res.data);
+      const res = await getAPI<WorkoutPlan[]>('/workouts');
+      setWorkoutPlans(res);
     } catch (error) {
       console.error('Failed to fetch workouts', error);
     } finally {
@@ -38,7 +38,7 @@ export const WorkoutTab = ({ onAddPress }: WorkoutTabProps) => {
 
   const handleDelete = async (id: string) => {
     try {
-      await apiClient.delete(`/workouts/${id}`);
+      await deleteAPI(`/workouts/${id}`);
       fetchWorkouts();
     } catch (error) {
       console.error('Failed to delete workout', error);
